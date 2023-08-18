@@ -38,13 +38,11 @@ public class Building : MonoBehaviour
 public class AutomaticProductionMethod : IProductionMethod
 {
 
-    private int constructionTime;
-    private int timeToNewAutomaticProduction;
+    private int cooldownTime;
     
-    public AutomaticProductionMethod(int constructionTime, int timeToNewAutomaticProduction)
+    public AutomaticProductionMethod(int cooldownTime)
     {
-        this.constructionTime = constructionTime;
-        this.timeToNewAutomaticProduction = timeToNewAutomaticProduction;
+        this.cooldownTime = cooldownTime;
         DoAutomaticProduction();
     }
     
@@ -52,23 +50,36 @@ public class AutomaticProductionMethod : IProductionMethod
     {
         while (true)
         {
-            await Task.Delay(timeToNewAutomaticProduction);
+            await Task.Delay(cooldownTime);
             StartProduction();
         }
     }
     
     public async Task StartProduction()
     {
-        await Task.Delay(constructionTime);
+        
     }
 
 }
 
 public class ManualProductionMethod : IProductionMethod
 {
+
+    private int cooldownTime;
+    private bool isProducing;
+
+    public ManualProductionMethod(int cooldownTime)
+    {
+        this.cooldownTime = cooldownTime;
+    }
+    
     public async Task StartProduction()
     {
-        await Task.Delay(timeToProduce);
+        if (isProducing) return;
+        
+        isProducing = true;
+        await Task.Delay(cooldownTime);
+        isProducing = false;
     }
 
 }
