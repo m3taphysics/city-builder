@@ -2,4 +2,5 @@
 {
     void Enable();
     void Disable();
+    void OnBuildingClicked(Building building);
 }

@@ -10,6 +10,8 @@ public class Main : MonoBehaviour
     
     private IGameState currentGameState;
     private Dictionary<GameState, IGameState> gameStates = new ();
+    
+    private Building [] buildings;
 
     private void Awake()
     {
@@ -18,8 +20,20 @@ public class Main : MonoBehaviour
 
         gameStates[GameState.BUILD] = new BuildGameState();
         gameStates[GameState.REGULAR] = new RegularGameState();
+
+        // Hacky way to get all buildings
+        buildings = FindObjectsOfType<Building>();
+        foreach (var building in buildings)
+        {
+            building.OnClicked += OnBuildingClicked;
+        }
         
         ChangeGameState(GameState.REGULAR);
+    }
+
+    private void OnBuildingClicked(Building building)
+    {
+        currentGameState.OnBuildingClicked(building);
     }
 
     private void OnBuildModePressed()
@@ -51,6 +65,11 @@ public class RegularGameState : IGameState
     {
         
     }
+
+    public void OnBuildingClicked(Building building)
+    {
+        Debug.Log(building.Name);
+    }
 }
 
 public class BuildGameState : IGameState
@@ -61,6 +80,11 @@ public class BuildGameState : IGameState
     }
 
     public void Disable()
+    {
+        
+    }
+
+    public void OnBuildingClicked(Building building)
     {
         
     }
