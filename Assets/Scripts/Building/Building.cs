@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -7,8 +8,12 @@ public class Building : MonoBehaviour
 
     [SerializeField] private BuildingScriptableObject buildingDescription;
     private IProductionMethod productionMethod;
-    
-    
+
+    private IEnumerator Start()
+    {
+        yield return new WaitForSeconds(buildingDescription.ConstructionTimeInSeconds);
+        BuildingComplete();
+    }
 
     private void BuildingComplete()
     {
@@ -29,9 +34,22 @@ public class Building : MonoBehaviour
 
     public void StartProduction()
     {
-        productionMethod.StartProduction();
+        productionMethod?.StartProduction();
     }
 
+}
+
+
+public class ProductionMethod : IProductionMethod
+{
+
+    private bool isAutomatic;
+    private int cooldownTime;
+
+    public Task StartProduction()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 
@@ -39,6 +57,7 @@ public class AutomaticProductionMethod : IProductionMethod
 {
 
     private int cooldownTime;
+    
     
     public AutomaticProductionMethod(int cooldownTime)
     {
